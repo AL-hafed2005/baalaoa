@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موقع بئلاوة</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- AOS Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <style>
+    :root {
+      --primary-color: #ff6f61;
+      --secondary-color: #2c3e50;
+      --accent-color: #f39c12;
+      --text-color: #333;
+      --light-bg: #f8f9fa;
+      --dark-bg: #2c3e50;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--light-bg);
+      overflow-x: hidden;
+      color: var(--text-color);
+    }
+    
+    /* نظام الانتقال بين الصفحات */
+    .page-transition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--primary-color);
+      z-index: 9999;
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+    
+    .page-transition.active {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    
+    /* تخصيص النافبار */
+    .navbar {
+      background-color: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      padding: 15px 0;
+    }
+    
+    .navbar-brand {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--primary-color) !important;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-brand:hover {
+      transform: scale(1.05);
+    }
+    
+    .nav-link {
+      font-size: 1.1rem;
+      margin-left: 20px;
+      position: relative;
+      color: var(--secondary-color) !important;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+    
+    .nav-link.active {
+      color: var(--primary-color) !important;
+      font-weight: bold;
+    }
+    
+    /* تخصيص الصفحات */
+    .page-section {
+      min-height: 100vh;
+      padding-top: 80px;
+      padding-bottom: 60px;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
+    
+    .page-section.active {
+      display: block;
+      animation: fadeIn 0.8s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    /* خلفيات الصفحات */
+    #home {
+      background: linear-gradient(135deg, rgba(44, 62, 80, 0.9), rgba(52, 152, 219, 0.8)), 
+                  url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+      color: white;
+    }
+    
+    #about {
+      background: linear-gradient(135deg, rgba(255, 111, 97, 0.9), rgba(243, 156, 18, 0.8)), 
+                  url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+      color: white;
+    }
+    
+    #services {
+      background: linear-gradient(135deg, rgba(41, 128, 185, 0.9), rgba(142, 68, 173, 0.8)), 
+                  url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    }
+    
+    #contact {
+      background: linear-gradient(135deg, rgba(39, 174, 96, 0.9), rgba(46, 204, 113, 0.8)), 
+                  url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+      color: white;
+    }
+    
+    /* العناوين */
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 50px;
+      position: relative;
+      display: inline-block;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: var(--primary-color);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.5s ease;
+    }
+    
+    .page-section.active .section-title::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    
+    /* بطاقات الخدمات */
+    .service-card {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      transform: translateY(50px);
+      opacity: 0;
+      height: 100%;
+    }
+    
+    .page-section.active .service-card {
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: calc(var(--order) * 0.1s);
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+    
+    .service-card:hover {
+      transform: translateY(-10px) !important;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .service-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+    }
+    
+    /* تهنئة العيد */
+    .eid-greeting {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      box-shadow: 0 5px 20px rgba(255, 111, 97, 0.5);
+      z-index: 1000;
+      animation: float 3s ease-in-out infinite;
+      transform: translateY(0);
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0); }
+    }
+    
+    .eid-greeting::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      width: 20px;
+      height: 20px;
+      background-color: var(--primary-color);
+      transform: rotate(45deg);
+      z-index: -1;
+    }
+    
+    /* صفحة من نحن - تحسينات جديدة */
+    .about-content {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    
+    .about-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      z-index: -1;
+      border-radius: 15px;
+    }
+    
+    .about-content h3 {
+      color: var(--secondary-color);
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    .about-content h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 50px;
+      height: 3px;
+      background-color: var(--primary-color);
+    }
+    
+    .about-content p {
+      color: #555;
+      line-height: 1.8;
+      font-size: 1.1rem;
+    }
+    
+    .about-image {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transform: rotate(-5deg);
+      transition: all 0.4s ease;
+      border: 5px solid white;
+    }
+    
+    .about-image:hover {
+      transform: rotate(0) scale(1.03);
+    }
+    
+    /* صفحة الاتصال - تحسينات جديدة */
+    .contact-form {
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    
+    .contact-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      z-index: -1;
+      border-radius: 15px;
+    }
+    
+    .designer-card {
+      background-color: rgba(131, 63, 63, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+    }
+    
+    .designer-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid var(--primary-color);
+      margin: 0 auto 15px;
+      display: block;
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      padding: 12px 20px;
+      border: 1px solid #ddd;
+      transition: all 0.3s ease;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(255, 111, 97, 0.25);
+      background-color: white;
+    }
+    
+    /* الفوتر */
+    footer {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 30px 0;
+      position: relative;
+    }
+    
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    }
+    
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      margin: 0 10px;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .social-icons a:hover {
+      background-color: var(--primary-color);
+      transform: translateY(-5px);
+    }
+    
+    /* تأثيرات خاصة */
+    .floating-text {
+      animation: floating 3s ease-in-out infinite;
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    /* زر الانتقال لأعلى */
+    .scroll-top {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 50px;
+      height: 50px;
+      background-color: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 111, 97, 0.4);
+    }
+    
+    .scroll-top.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .scroll-top:hover {
+      background-color: var(--accent-color);
+      transform: translateY(-5px);
+    }
+    
+    /* رسائل التنبيه المخصصة */
+    .alert-message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1100;
+      min-width: 300px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .alert-message.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    
+    /* زر الإغلاق في رسائل التنبيه */
+    .btn-close-white {
+      filter: invert(1) brightness(100%);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- تأثير الانتقال بين الصفحات -->
+  <div class="page-transition"></div>
+  
+  <!-- رسالة التنبيه -->
+  <div id="alertMessage" class="alert alert-success alert-dismissible fade alert-message" role="alert">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-check-circle-fill me-2"></i>
+      <span id="alertText">تم إرسال الرسالة بنجاح!</span>
+      <button type="button" class="btn-close btn-close-white ms-auto" onclick="hideAlert()"></button>
+    </div>
+  </div>
+
+  <!-- تهنئة العيد -->
+  <div class="eid-greeting animate__animated animate__bounceIn">
+    <i class="bi bi-stars me-2"></i> كل عام وأنتم بخير - عيد سعيد
+  </div>
+
+  <!-- زر الانتقال لأعلى -->
+  <div class="scroll-top">
+    <i class="bi bi-arrow-up"></i>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">بئلاوة</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active page-link" data-page="home">الرئيسية</a></li>
+          <li class="nav-item"><a class="nav-link page-link" data-page="about">من نحن</a></li>
+          <li class="nav-item"><a class="nav-link page-link" data-page="services">خدماتنا</a></li>
+          <li class="nav-item"><a class="nav-link page-link" data-page="contact">اتصل بنا</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- الصفحات -->
+  <main>
+    <!-- الصفحة الرئيسية -->
+    <section id="home" class="page-section active" data-page="home">
+      <div class="container h-100">
+        <div class="row h-100 align-items-center">
+          <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-3 fw-bold mb-4 animate__animated animate__fadeInDown">مرحبًا بكم في <span class="text-warning">بئلاوة</span></h1>
+            <p class="lead mb-5 animate__animated animate__fadeInUp animate__delay-1s">نقدم حلولًا رقمية مبتكرة تساعد عملك على النمو والازدهار في العصر الرقمي</p>
+            <a href="#" class="btn btn-primary btn-lg px-4 py-3 pulse page-link" data-page="services">
+              اكتشف خدماتنا <i class="bi bi-arrow-left ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- صفحة من نحن -->
+    <section id="about" class="page-section" data-page="about">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="section-title">من نحن</h2>
+          </div>
+        </div>
+        <div class="row align-items-center">
+          <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="about-image">
+              <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="فريق العمل" class="img-fluid rounded">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="about-content">
+              <h3 class="mb-4">بئلاوة - رؤيتنا ورسالتنا</h3>
+              <p class="mb-4">نحن فريق من المبتدئين في عالم البرمجة والعالم الرقمي و نؤمن بقوة التكنولوجيا في تغيير العالم وتحسين حياة الناس.</p>
+              <p class="mb-4">تأسست شركتنا عام 2025 بهدف مساعدة الشركات والأفراد على تحقيق أهدافهم من خلال التكنولوجيا الحديثة. نقدم حلولاً مخصصة تلبي احتياجات عملائنا بجودة عالية وإبداع لا حدود له.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- صفحة الخدمات -->
+    <section id="services" class="page-section" data-page="services">
+      <div class="container">
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8 text-center">
+            <h2 class="section-title">خدماتنا</h2>
+            <p class="lead">نقدم مجموعة متكاملة من الخدمات الرقمية لمساعدة عملك على النمو</p>
+          </div>
+        </div>
+        <div class="row">
+          <!-- خدمة 1 -->
+          <div class="col-md-4" style="--order: 1;">
+            <div class="service-card">
+              <i class="bi bi-laptop service-icon"></i>
+              <h3>تصميم المواقع</h3>
+              <p>تصميم مواقع احترافية وجذابة تتوافق مع معايير السيو وتعمل بكفاءة على جميع الأجهزة.</p>
+              <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#service1Modal">اطلب الخدمة</button>
+            </div>
+          </div>
+          
+          <!-- خدمة 2 -->
+          <div class="col-md-4" style="--order: 2;">
+            <div class="service-card">
+              <i class="bi bi-phone service-icon"></i>
+              <h3>تطوير التطبيقات</h3>
+              <p>تطوير تطبيقات جوال عالية الجودة لنظامي iOS و Android بأساليب حديثة.</p>
+              <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#service2Modal">اطلب الخدمة</button>
+            </div>
+          </div>
+          
+          <!-- خدمة 3 -->
+          <div class="col-md-4" style="--order: 3;">
+            <div class="service-card">
+              <i class="bi bi-bar-chart service-icon"></i>
+              <h3>التسويق الرقمي</h3>
+              <p>حلول تسويقية متكاملة لزيادة ظهور علامتك التجارية وجذب المزيد من العملاء.</p>
+              <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#service3Modal">اطلب الخدمة</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- صفحة الاتصال -->
+    <section id="contact" class="page-section" data-page="contact">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 text-center mb-5">
+            <h2 class="section-title">اتصل بنا</h2>
+            <p class="lead">نحن هنا لمساعدتك! تواصل معنا لأي استفسار أو لبدء مشروعك القادم</p>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="row">
+              <div class="col-lg-6">
+                <div class="contact-form">
+                  <form id="contactForm" method="POST">
+                    <div class="mb-4">
+                      <input type="text" class="form-control" name="name" placeholder="اسمك الكريم" required>
+                    </div>
+                    <div class="mb-4">
+                      <input type="email" class="form-control" name="email" placeholder="بريدك الإلكتروني" required>
+                    </div>
+                    <div class="mb-4">
+                      <input type="tel" class="form-control" name="phone" placeholder="رقم هاتفك">
+                    </div>
+                    <div class="mb-4">
+                      <textarea class="form-control" name="message" rows="5" placeholder="رسالتك" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2" id="submitBtn">
+                      <span id="submitText">إرسال الرسالة</span>
+                      <span id="submitSpinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                    </button>
+                  </form>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="designer-card">
+                  <img src="https://c.top4top.io/p_3376tnxhf1.jpg" alt="المصمم" class="designer-img">
+                  <h4>عبدالرحمن عادل</h4>
+                  <p class="text-muted">المصمم الرئيسي</p>
+                  <p>طالب في كلية علوم الحاسوب وتكنولوجيا المعلومات</p>
+                  <div class="social-icons mt-3">
+                    <a href="https://www.facebook.com/share/15vbRLWUkZ/"><i class="bi bi-facebook"></i></a>
+                    <a href="https://www.instagram.com/8lm_w?igsh=eWY3dTZ6cTNvaXY3"><i class="bi bi-instagram"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- الفوتر -->
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h3 class="text-white mb-4">بئلاوة</h3>
+          <p>شركة رائدة في تقديم الحلول الرقمية والتقنية للشركات والأفراد.</p>
+          <div class="social-icons mt-4">
+            <a href="https://www.facebook.com/share/15vbRLWUkZ/"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/8lm_w?igsh=eWY3dTZ6cTNvaXY3#"><i class="bi bi-instagram"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <h4 class="text-white mb-4">روابط سريعة</h4>
+          <ul class="list-unstyled">
+            <li class="mb-2"><a href="#" class="text-white-50 page-link" data-page="home">الرئيسية</a></li>
+            <li class="mb-2"><a href="#" class="text-white-50 page-link" data-page="about">من نحن</a></li>
+            <li class="mb-2"><a href="#" class="text-white-50 page-link" data-page="services">خدماتنا</a></li>
+            <li><a href="#" class="text-white-50 page-link" data-page="contact">اتصل بنا</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4">
+          <h4 class="text-white mb-4">معلومات الاتصال</h4>
+          <ul class="list-unstyled text-white-50">
+            <li class="mb-2"><i class="bi bi-geo-alt-fill me-2"></i> العراق-ديالى</li>
+            <li class="mb-2"><i class="bi bi-telephone-fill me-2"></i> +9647729807659</li>
+            <li><i class="bi bi-envelope-fill me-2"></i> info@baylawa.com</li>
+          </ul>
+        </div>
+      </div>
+      <hr class="my-4 bg-light">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start">
+          <p class="mb-0">&copy; 2023 بئلاوة. جميع الحقوق محفوظة.</p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <p class="mb-0">تصميم وتطوير <a href="#" class="text-white">بئلاوة</a></p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- نماذج الخدمات -->
+  <div class="modal fade" id="service1Modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">طلب خدمة تصميم المواقع</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="service1Form" method="POST">
+            <input type="hidden" name="_subject" value="طلب خدمة تصميم المواقع">
+            <div class="mb-3">
+              <label class="form-label">اسمك</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">تفاصيل المشروع</label>
+              <textarea class="form-control" name="project_details" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="service1Btn">
+              <span id="service1Text">إرسال الطلب</span>
+              <span id="service1Spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="service2Modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">طلب خدمة تطوير التطبيقات</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="service2Form" method="POST">
+            <input type="hidden" name="_subject" value="طلب خدمة تطوير التطبيقات">
+            <div class="mb-3">
+              <label class="form-label">اسمك</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">نوع التطبيق</label>
+              <select class="form-select" name="app_type">
+                <option value="تطبيق iOS">تطبيق iOS</option>
+                <option value="تطبيق Android">تطبيق Android</option>
+                <option value="تطبيق متعدد المنصات">تطبيق متعدد المنصات</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">تفاصيل المشروع</label>
+              <textarea class="form-control" name="project_details" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="service2Btn">
+              <span id="service2Text">إرسال الطلب</span>
+              <span id="service2Spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="service3Modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">طلب خدمة التسويق الرقمي</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="service3Form" method="POST">
+            <input type="hidden" name="_subject" value="طلب خدمة التسويق الرقمي">
+            <div class="mb-3">
+              <label class="form-label">اسمك</label>
+              <input type="text" class="form-control" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">البريد الإلكتروني</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">نوع الخدمة المطلوبة</label>
+              <select class="form-select" name="service_type">
+                <option value="إدارة وسائل التواصل الاجتماعي">إدارة وسائل التواصل الاجتماعي</option>
+                <option value="تحسين محركات البحث (SEO)">تحسين محركات البحث (SEO)</option>
+                <option value="إعلانات ممولة">إعلانات ممولة</option>
+                <option value="حملة تسويقية متكاملة">حملة تسويقية متكاملة</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">تفاصيل المشروع</label>
+              <textarea class="form-control" name="project_details" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100" id="service3Btn">
+              <span id="service3Text">إرسال الطلب</span>
+              <span id="service3Spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- المكتبات المطلوبة -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // تهيئة AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+
+    // نظام الانتقال بين الصفحات
+    document.addEventListener('DOMContentLoaded', function() {
+      const pageLinks = document.querySelectorAll('.page-link');
+      const pageTransition = document.querySelector('.page-transition');
+      
+      function navigateToPage(pageId) {
+        // تفعيل تأثير الانتقال
+        pageTransition.classList.add('active');
+        
+        // بعد انتهاء الانتقال
+        setTimeout(() => {
+          // إخفاء جميع الصفحات
+          document.querySelectorAll('.page-section').forEach(page => {
+            page.classList.remove('active');
+          });
+          
+          // إظهار الصفحة المطلوبة
+          document.querySelector(`#${pageId}`).classList.add('active');
+          
+          // تحديث الروابط النشطة
+          pageLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.dataset.page === pageId) {
+              link.classList.add('active');
+            }
+          });
+          
+          // الانتقال لأعلى الصفحة
+          window.scrollTo(0, 0);
+          
+          // إخفاء تأثير الانتقال
+          setTimeout(() => {
+            pageTransition.classList.remove('active');
+          }, 100);
+        }, 700);
+      }
+      
+      // إضافة حدث النقر لجميع روابط الصفحات
+      pageLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const pageId = this.dataset.page;
+          navigateToPage(pageId);
+        });
+      });
+      
+      // تهيئة الصفحة الأولى
+      navigateToPage('home');
+    });
+
+    // زر الانتقال لأعلى
+    window.addEventListener('scroll', function() {
+      const scrollTop = document.querySelector('.scroll-top');
+      if (window.scrollY > 300) {
+        scrollTop.classList.add('active');
+      } else {
+        scrollTop.classList.remove('active');
+      }
+    });
+    
+    document.querySelector('.scroll-top').addEventListener('click', function() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // تأثيرات إضافية عند التمرير
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+      } else {
+        navbar.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.1)';
+      }
+    });
+
+    // إدارة رسائل التنبيه
+    function showAlert(message, isSuccess) {
+      const alert = document.getElementById('alertMessage');
+      const alertText = document.getElementById('alertText');
+      
+      alert.className = `alert alert-${isSuccess ? 'success' : 'danger'} alert-dismissible fade alert-message`;
+      alertText.textContent = message;
+      alert.classList.add('show');
+      
+      // إخفاء الرسالة تلقائياً بعد 5 ثواني
+      setTimeout(hideAlert, 5000);
+    }
+
+    function hideAlert() {
+      document.getElementById('alertMessage').classList.remove('show');
+    }
+
+    // إرسال نموذج الاتصال
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const submitText = document.getElementById('submitText');
+      const submitSpinner = document.getElementById('submitSpinner');
+      
+      // تعطيل الزر وإظهار المؤشر
+      submitBtn.disabled = true;
+      submitText.textContent = 'جاري الإرسال...';
+      submitSpinner.classList.remove('d-none');
+      
+      // إرسال البيانات باستخدام AJAX
+      fetch('https://formspree.io/f/xyzedbyy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.name.value,
+          email: this.email.value,
+          phone: this.phone.value,
+          message: this.message.value,
+          _subject: 'رسالة جديدة من موقع بئلاوة'
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          showAlert('تم إرسال رسالتك بنجاح! سنتواصل معك قريبًا.', true);
+          this.reset();
+        } else {
+          throw new Error('فشل في إرسال الرسالة');
+        }
+      })
+      .catch(error => {
+        showAlert('حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.', false);
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        // إعادة تمكين الزر وإخفاء المؤشر
+        submitBtn.disabled = false;
+        submitText.textContent = 'إرسال الرسالة';
+        submitSpinner.classList.add('d-none');
+      });
+    });
+
+    // إرسال نماذج الخدمات
+    function handleServiceForm(formId, btnId, textId, spinnerId, successMessage) {
+      const form = document.getElementById(formId);
+      const btn = document.getElementById(btnId);
+      const text = document.getElementById(textId);
+      const spinner = document.getElementById(spinnerId);
+      
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // تعطيل الزر وإظهار المؤشر
+        btn.disabled = true;
+        text.textContent = 'جاري الإرسال...';
+        spinner.classList.remove('d-none');
+        
+        // جمع بيانات النموذج
+        const formData = new FormData(this);
+        const formDataObj = {};
+        formData.forEach((value, key) => formDataObj[key] = value);
+        
+        // إرسال البيانات باستخدام AJAX
+        fetch('https://formspree.io/f/xyzedbyy', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(formDataObj)
+        })
+        .then(response => {
+          if (response.ok) {
+            showAlert(successMessage, true);
+            this.reset();
+            // إغلاق المودال بعد الإرسال الناجح
+            const modal = bootstrap.Modal.getInstance(document.getElementById(formId.replace('Form', 'Modal')));
+            modal.hide();
+          } else {
+            throw new Error('فشل في إرسال الطلب');
+          }
+        })
+        .catch(error => {
+          showAlert('حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.', false);
+          console.error('Error:', error);
+        })
+        .finally(() => {
+          // إعادة تمكين الزر وإخفاء المؤشر
+          btn.disabled = false;
+          text.textContent = 'إرسال الطلب';
+          spinner.classList.add('d-none');
+        });
+      });
+    }
+
+    // تهيئة معالجات النماذج
+    handleServiceForm(
+      'service1Form', 
+      'service1Btn', 
+      'service1Text', 
+      'service1Spinner', 
+      'تم إرسال طلب خدمة تصميم المواقع بنجاح! سنتواصل معك قريبًا.'
+    );
+    
+    handleServiceForm(
+      'service2Form', 
+      'service2Btn', 
+      'service2Text', 
+      'service2Spinner', 
+      'تم إرسال طلب خدمة تطوير التطبيقات بنجاح! سنتواصل معك قريبًا.'
+    );
+    
+    handleServiceForm(
+      'service3Form', 
+      'service3Btn', 
+      'service3Text', 
+      'service3Spinner', 
+      'تم إرسال طلب خدمة التسويق الرقمي بنجاح! سنتواصل معك قريبًا.'
+    );
+  </script>
+</body>
+</html>
